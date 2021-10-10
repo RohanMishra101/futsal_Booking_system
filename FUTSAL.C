@@ -1,20 +1,30 @@
 #include<stdio.h>
 #include<conio.h>
 #include<graphics.h>
+void menu();
 
 void main()
 {
+	menu();
+}
+
+void menu()
+{
 	int gd = DETECT,gm;
 	initgraph(&gd,&gm,"c:\\TURBOC3\\BGI");
-	delay(500);
+       //	delay(500);
 	rectangle(50,80,600,400);
-	delay(500);
+       //	delay(500);
 	rectangle(52,82,598,398);
 	delay(500);
 	settextstyle(10,HORIZ_DIR,3);
 	outtextxy(90,90,"Futsal Management System");
+	delay(500);
+	gotoxy(10,10);
+	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+	gotoxy(10,23);
+	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+
 	getch();
 	closegraph();
-
-
 }
