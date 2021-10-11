@@ -35,6 +35,7 @@ void menu()
 void menu_start()
 {
        settextstyle(1,HORIZ_DIR,4);
+       delay(500);
        gotoxy(30,13);
        printf("1) Book a Match.\n");
        gotoxy(30,15);
