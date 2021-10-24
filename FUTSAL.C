@@ -5,7 +5,7 @@
 
 void menu();
 void menu_start();
-void booking();
+void option();
 
 void main()
 {
@@ -14,11 +14,7 @@ void main()
 //UI Interface
 void menu()
 {
-       //	int gd = DETECT,gm;
-       //	initgraph(&gd,&gm,"c:\\TURBOC3\\BGI");
-       //	delay(500);
 	rectangle(50,80,600,400);
-       //	delay(500);
 	rectangle(52,82,598,398);
 	delay(500);
 	settextstyle(10,HORIZ_DIR,3);
@@ -26,11 +22,10 @@ void menu()
 	delay(500);
 	gotoxy(10,10);
 	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+	gotoxy(40,24);
+	printf("    Opeaning/Closing Time: 8am-7pm");
 	gotoxy(10,23);
 	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-       //	menu_start();
-       //	getch();
-       //	closegraph();
 }
 //UI Interface end
 
@@ -52,20 +47,19 @@ void menu_start()
        gotoxy(30,19);
        printf("4) Exit.");
        choice = getche();
-       booking(choice);
+       option(choice);
       // getch();
        closegraph();
 }
-//Menu layout 1 end
+//Menu layout end
 
-//Menu of 1 option
-void booking(int ch)
+//Menu of Booking
+void option(int ch)
 {
 	int gd = DETECT,gm;
 	initgraph(&gd,&gm,"C:\\TURBOC3\\BGI");
 	cleardevice();
 	gotoxy(25,20);
-       //	setbkcolor(BLACK);
 	switch(ch)
 	{
 		case '1':
@@ -73,6 +67,20 @@ void booking(int ch)
 			menu();
 			gotoxy(25,20);
 			printf("Holla Peter");
+		}
+		break;
+		case '2':
+		{
+			menu();
+			gotoxy(10,20);
+			printf("Nameste Puter");
+		}
+		break;
+		case '3':
+		{
+			menu();
+			gotoxy(10,15);
+			printf("Meow meow NIGGA");
 		}
 		break;
 		default:
