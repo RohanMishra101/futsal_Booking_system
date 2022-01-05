@@ -2,32 +2,21 @@
 #include<conio.h>
 #include<stdlib.h>
 #include<graphics.h>
+#include<string.h>
+
+struct det{
+	char day[15];
+	int time;
+}book[10];
 
 void menu();
 void menu_start();
-void option();
-
+void booking();
 void main()
 {
 	menu_start();
 }
-//UI Interface
-void menu()
-{
-	rectangle(50,80,600,400);
-	rectangle(52,82,598,398);
-	delay(500);
-	settextstyle(10,HORIZ_DIR,3);
-	outtextxy(90,90,"Futsal Management System");
-	delay(500);
-	gotoxy(10,10);
-	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-	gotoxy(40,24);
-	printf("    Opeaning/Closing Time: 8am-7pm");
-	gotoxy(10,23);
-	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-}
-//UI Interface end
+
 
 //Menu layout 1
 void menu_start()
@@ -47,26 +36,71 @@ void menu_start()
        gotoxy(30,19);
        printf("4) Exit.");
        choice = getche();
-       option(choice);
-      // getch();
+       booking(choice);
+       //getch();
        closegraph();
 }
 //Menu layout end
 
-//Menu of Booking
-void option(int ch)
+//UI Interface
+void menu()
 {
+	rectangle(50,80,600,400);
+	rectangle(52,82,598,398);
+	delay(500);
+	settextstyle(10,HORIZ_DIR,3);
+	outtextxy(90,90,"Futsal Management System");
+	delay(500);
+	gotoxy(10,10);
+	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+	gotoxy(40,24);
+	printf("    Opeaning/Closing Time: 8am-7pm");
+	gotoxy(10,23);
+	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+}
+//UI Interface end
+
+void booking(choice)
+{
+
+	FILE *fp;
+	char another;
+	int i,ch;
 	int gd = DETECT,gm;
 	initgraph(&gd,&gm,"C:\\TURBOC3\\BGI");
-	cleardevice();
-	gotoxy(25,20);
-	switch(ch)
+
+	switch(choice)
 	{
 		case '1':
 		{
-			menu();
-			gotoxy(25,20);
-			printf("Holla Peter");
+			fp = fopen("c:\\TURBOC3\\BIN\\futsal\\dat.txt","a+");
+			if(fp == NULL)
+			{
+				printf("File not FOUND");
+			}
+			another = 'y';
+			while(another == 'y')
+			{
+				cleardevice();
+				menu();
+				fflush(stdin);
+				gotoxy(15,12);
+				printf("Enter the day of Match: ");
+				scanf("%s",book[i].day);
+				fflush(stdin);
+				gotoxy(15,13);
+				printf("Entre time of Match(8am-7pm): ");
+				scanf("%d",&book[i].time);
+				fflush(stdin);
+				gotoxy(36,22);
+				fwrite(&book,sizeof(book),1,fp);
+				i++;
+				printf("DO you want to Book another Game (Y/N)");
+				another = getche();
+				tolower(another);
+			}
+			fclose(fp);
+			menu_start();
 		}
 		break;
 		case '2':
