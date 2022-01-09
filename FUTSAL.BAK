@@ -4,14 +4,26 @@
 #include<graphics.h>
 #include<string.h>
 
-struct det{
-	char day[15];
+struct booking_Details{
+	char name[40];
+	int num;
+	int hours;
 	int time;
-}book[10];
+
+	struct booking_date{
+		int year;
+		int month;
+		int day;
+	}d;
+
+}detail;
+
 
 void menu();
 void menu_start();
 void booking();
+
+
 void main()
 {
 	menu_start();
@@ -42,6 +54,7 @@ void menu_start()
 }
 //Menu layout end
 
+
 //UI Interface
 void menu()
 {
@@ -49,7 +62,7 @@ void menu()
 	rectangle(52,82,598,398);
 	delay(500);
 	settextstyle(10,HORIZ_DIR,3);
-	outtextxy(90,90,"Futsal Management System");
+	outtextxy(90,90,"  Futsal Booking System");
 	delay(500);
 	gotoxy(10,10);
 	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
@@ -60,42 +73,117 @@ void menu()
 }
 //UI Interface end
 
+
+
 void booking(choice)
 {
 
 	FILE *fp;
 	char another;
-	int i,ch;
+	int i;
 	int gd = DETECT,gm;
 	initgraph(&gd,&gm,"C:\\TURBOC3\\BGI");
-
 	switch(choice)
 	{
 		case '1':
 		{
-			fp = fopen("c:\\TURBOC3\\BIN\\futsal\\dat.txt","a+");
+			fp = fopen("c:\\TURBOC3\\BIN\\futsal\\dat.txt","ab+");
 			if(fp == NULL)
 			{
 				printf("File not FOUND");
 			}
 			another = 'y';
+			fseek(fp,0, SEEK_END);
 			while(another == 'y')
 			{
+				flag:
 				cleardevice();
 				menu();
 				fflush(stdin);
 				gotoxy(15,12);
-				printf("Enter the day of Match: ");
-				scanf("%s",book[i].day);
+				printf("Name             : ");
+				gets(detail.name);
 				fflush(stdin);
 				gotoxy(15,13);
-				printf("Entre time of Match(8am-7pm): ");
-				scanf("%d",&book[i].time);
+				printf("Contact no.      : ");
+				scanf("%d",&detail.num);
 				fflush(stdin);
+				gotoxy(15,14);
+				printf("Date(yyyy/mm/dd) : \t");
+				printf("Year : ");
+				scanf("%d",&detail.d.year);
+				fflush(stdin);
+
+				if(detail.d.year <= 2021)
+				{
+					gotoxy(15,15);
+					printf("Invalid year!! Year should not be lessthen 2022.");
+					gotoxy(15,16);
+					printf("Date(yyyy/mm/dd) : \t");
+					printf("Year : ");
+					scanf("%d",&detail.d.year);
+					fflush(stdin);
+					gotoxy(39,17);
+					printf(" Month : ");
+					scanf("%d",&detail.d.month);
+					fflush(stdin);
+
+					if(detail.d.month > 12 || detail.d.month < 1)
+					{
+						gotoxy(15,18);
+						printf("Invalid Month!! Month should be between 1 to 12.");
+						gotoxy(39,19);
+						printf(" Month : ");
+						scanf("%d",&detail.d.month);
+						fflush(stdin);
+						gotoxy(39,20);
+						printf("   Day : ");
+						scanf("%d",&detail.d.day);
+						fflush(stdin);
+						if(detail.d.day < 1 || detail.d.day >30)
+						{
+							gotoxy(39,21);
+							printf("Invalid Day!! Day should be between 1 to 30");
+
+						}
+						else
+						{
+							fflush(stdin);
+							gotoxy(39,18);
+							printf("   Day : ");
+							scanf("%d",&detail.d.day);
+						}
+					}
+
+				}
+				else
+				{
+					gotoxy(39,15);
+					printf(" Month : ");
+					scanf("%d",&detail.d.month);
+					fflush(stdin);
+					if(detail.d.month < 1 || detail.d.month > 12)
+					{
+						fflush(stdin);
+						gotoxy(15,16);
+						printf("Invalid Month!! Month should be between 1 to 12.");
+						gotoxy(39,17);
+						printf(" Month : ");
+						scanf("%d",&detail.d.month);
+					}
+				}
+				fflush(stdin);
+				gotoxy(39,16);
+				printf("   Day : ");
+				scanf("%d",&detail.d.day);
+				gotoxy(15,17);
+				printf("Time(2pm)        : ");
+				scanf("%s",&detail.time);
+				gotoxy(15,18);
+				printf("Hours            : ");
+				scanf("%d",&detail.hours);
 				gotoxy(36,22);
-			//	fwrite(&book,sizeof(book),1,fp);
-				i=0;
-				printf("%d",i);
+			 //	fwrite(&detail,sizeof(detail),1,fp);
 				printf("DO you want to Book another Game (Y/N)");
 				another = getche();
 				tolower(another);
@@ -108,19 +196,24 @@ void booking(choice)
 		{
 			menu();
 			gotoxy(10,20);
-			printf("Nameste Puter");
+			printf("TO be added");
 		}
 		break;
 		case '3':
 		{
 			menu();
 			gotoxy(10,15);
-			printf("Meow meow NIGGA");
+			printf("TO be added");
+		}
+		break;
+		case '4':
+		{
+			exit(0);
 		}
 		break;
 		default:
 		{
-			exit (0);
+			menu_start();
 		}
 	}
 	getch();
