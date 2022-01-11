@@ -122,12 +122,18 @@ void booking(choice)
 					printf("Date(yyyy/mm/dd) : \t");
 					printf("Year : ");
 					scanf("%d",&detail.d.year);
+					if(detail.d.year <= 2021)
+					{
+						gotoxy(20,18);
+						printf("To many errors!! Please refill the form.");
+						i = getche();
+						goto flag;
+					}
 					fflush(stdin);
 					gotoxy(39,17);
 					printf(" Month : ");
 					scanf("%d",&detail.d.month);
 					fflush(stdin);
-
 					if(detail.d.month > 12 || detail.d.month < 1)
 					{
 						gotoxy(15,18);
@@ -136,27 +142,34 @@ void booking(choice)
 						printf(" Month : ");
 						scanf("%d",&detail.d.month);
 						fflush(stdin);
-						if(detail.d.month > 12 || detail.d.month < 1)
+						if(detail.d.month >12 || detail.d.month < 1)
 						{
-							printf("To many errors!! ")
+							gotoxy(20,20);
+							printf("To many errors!! Please refill the form.");
+							i = getche();
+							goto flag;
 						}
-						gotoxy(39,20);
+					}
+					gotoxy(39,20);
+					printf("   Day : ");
+					scanf("%d",&detail.d.day);
+					fflush(stdin);
+					if(detail.d.day < 1 || detail.d.day >30)
+					{
+						gotoxy(15,21);
+						printf("Invalid Day!! Day should be between 1 to 30");
+						gotoxy(15,22);
 						printf("   Day : ");
 						scanf("%d",&detail.d.day);
 						fflush(stdin);
 						if(detail.d.day < 1 || detail.d.day >30)
 						{
-							gotoxy(39,21);
-							printf("Invalid Day!! Day should be between 1 to 30");
+							gotoxy(20,21);
+							printf("To many errors!! Please refill the form.");
+							i = getche();
+							goto flag;
+						}
 
-						}
-						else
-						{
-							fflush(stdin);
-							gotoxy(39,18);
-							printf("   Day : ");
-							scanf("%d",&detail.d.day);
-						}
 					}
 
 				}
@@ -174,20 +187,45 @@ void booking(choice)
 						gotoxy(39,17);
 						printf(" Month : ");
 						scanf("%d",&detail.d.month);
+						fflush(stdin);
+						if(detail.d.month < 1 || detail.d.month > 12)
+						{
+							gotoxy(20,18);
+							printf("To many Errors!! Please refill the Form");
+							i = getche();
+							goto flag;
+						}
+						gotoxy(39,18);
+						printf("   Day : ");
+						scanf("%d",&detail.d.day);
+						fflush(stdin);
+						if(detail.d.day < 1 || detail.d.day > 30);
+						{		
+							gotoxy(15,19);
+							printf("Invalid Day!! Day should be between 1 to 30");
+			 				gotoxy(39,20);
+							printf("   Day : ");
+							scanf("%d",&detail.d.day);
+							if(detail.d.day < 1 || detail.d.day > 30)
+							{
+								gotoxy(20,21);
+								printf("To many Errors!! Please refill the Form");
+								i = getche();
+	     						goto flag;
+							}
+						}
 					}
 				}
 				fflush(stdin);
-				gotoxy(39,16);
-				printf("   Day : ");
-				scanf("%d",&detail.d.day);
-				gotoxy(15,17);
-				printf("Time(2pm)        : ");
-				scanf("%s",&detail.time);
-				gotoxy(15,18);
-				printf("Hours            : ");
-				scanf("%d",&detail.hours);
+//				gotoxy(39,16);
+//
+//				printf("Time(2pm)        : ");
+//				scanf("%s",&detail.time);
+//				gotoxy(15,18);
+//				printf("Hours            : ");
+//				scanf("%d",&detail.hours);
 				gotoxy(36,22);
-			 //	fwrite(&detail,sizeof(detail),1,fp);
+				fwrite(&detail,sizeof(detail),1,fp);
 				printf("DO you want to Book another Game (Y/N)");
 				another = getche();
 				tolower(another);
