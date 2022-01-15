@@ -22,13 +22,14 @@ struct booking_Details{
 void menu();
 void menu_start();
 void booking();
+//void search_menu();
+//void view_booking();
 
 
 void main()
 {
 	menu_start();
 }
-
 
 //Menu layout 1
 void menu_start()
@@ -42,9 +43,9 @@ void menu_start()
        gotoxy(30,13);
        printf("1) Book a Match.\n");
        gotoxy(30,15);
-       printf("2) Cancel your Booking.\n");
+       printf("2) View Bookings.\n");
        gotoxy(30,17);
-       printf("3) View Bookings.\n");
+       printf("3) Cancel your Booking.\n");
        gotoxy(30,19);
        printf("4) Exit.");
        choice = getche();
@@ -78,9 +79,9 @@ void menu()
 void booking(choice)
 {
 
-	FILE *fp;
+	FILE *fp,*fp1;
 	char another;
-	int i,recsize,year,month,day,stime,etime;
+	int i,recsize,option;
 	int gd = DETECT,gm;
 	initgraph(&gd,&gm,"C:\\TURBOC3\\BGI");
 	fp = fopen("c:\\TURBOC3\\BIN\\futsal\\dat.txt","rb+");
@@ -92,11 +93,21 @@ void booking(choice)
 			printf("File not found!!");
 		}
 	}
+	fp1 = fopen("c:\\TURBOC3\\BIN\\futsal\\futsal_booking.txt","rb+");
+	if(fp1 == NULL)
+	{
+		fp1 = fopen("c:\\TURBOC3\\BIN\\futsal\\futsal_booking.txt"," wb+");
+		if(fp1 == NULL)
+		{
+			printf("File not found!!");
+		}
+	}
 	recsize = sizeof(detail);
 	switch(choice)
 	{
 		case '1':
 		{
+			int year,month,day,stime,etime;
 			another = 'y';
 			fseek(fp,0, SEEK_END);
 			while(another == 'y')
@@ -250,7 +261,7 @@ void booking(choice)
 				year = detail.d.year;
 				month = detail.d.month;
 				day = detail.d.day;
-				printf("%d,%d,%d",year,month,day);
+				printf("%d/%d/%d",year,month,day);
 				gotoxy(16,14);
 				printf("Starting Time : ");
 				scanf("%d",&detail.stime);
@@ -259,12 +270,13 @@ void booking(choice)
 				scanf("%d",&detail.etime);
 				stime = detail.stime;
 				etime = detail.etime;
-				rewind(fp);
-				while(fread(&detail,recsize,1,fp)>0)
+				fwrite(&detail,recsize,1,fp);
+				rewind(fp1);
+				while(fread(&detail,recsize,1,fp1)>0)
 				{
-					if(year==detail.d.year  && month == detail.d.month  &&  day  == detail.d.day )
+					if(detail.d.year==year  && detail.d.month == month  &&  detail.d.day  == day )
 					{
-							if(stime >= detail.stime  && etime <= detail.etime  )
+							if(detail.stime >= stime  && detail.etime <= etime )
 							{
 								gotoxy(12,17);
 								printf("The given time is already been booked.");
@@ -276,8 +288,9 @@ void booking(choice)
 								goto time;
 							}
 							else{
+								fseek(fp1,0,SEEK_END);
 								printf("Your Booking is succesfully Booked!!");
-								fwrite(&detail,recsize,1,fp);	
+								fwrite(&detail,recsize,1,fp1);	
 							}
 										
 					}
@@ -295,15 +308,112 @@ void booking(choice)
 				another = getche();
 				tolower(another);
 			}
-			fclose(fp);
+//			fclose(fp);
 			menu_start();
 		}
 		break;
 		case '2':
 		{
+			int year,month,day,stime,etime;
+			char uname[50];
+			search_menu:
+			cleardevice();
 			menu();
-			gotoxy(10,20);
-			printf("TO be added");
+			gotoxy(30,13);
+			printf("1) View Bookings");
+			gotoxy(30,15);
+			printf("2) Find your booking");
+			gotoxy(30,17);
+			printf("3) Exit");
+			option = getche();
+			switch(option)
+			{
+				case '1':
+				{
+					cleardevice();
+					menu();
+					gotoxy(10,11);
+					printf("Date(yyyy/mm/dd) : ");
+					gotoxy(10,12);
+					printf(" Year : ");
+					scanf("%d",&year);
+					gotoxy(25,12);
+					printf("Month : ");
+					scanf("%d",&month);
+					gotoxy(35,12);
+					printf("  Day : ");
+					scanf("%d",&day);
+					gotoxy(14,13);
+					printf("-------------------------------------------------------");
+					gotoxy(16,15);
+					printf("Date: ");
+					gotoxy(30,15);
+					printf("Starting Time: ");
+					gotoxy(40,15);
+					printf("Ending Time: ");
+
+					rewind (fp);
+					while(fread(&detail,recsize,1,fp1)>0)
+					{
+
+						if(detail.d.year == year && detail.d.month == month && detail.d.day == day)
+						{
+							gotoxy(16,17);
+							printf("%d/%d/%d",detail.d.year,detail.d.month,detail.d.day);
+							gotoxy(30,17);
+							printf("%d",detail.stime);
+							gotoxy(50,17);
+							printf("%d",detail.etime);
+
+						}
+						else
+						{       gotoxy(40,15);
+							printf("There is no Booking in %d/%d/%d",detail.d.year,detail.d.month,detail.d.day);
+						}
+					}
+				}
+				break;
+				case '2':
+				{
+					cleardevice();
+					menu();
+					printf("Enter your name: ");
+					scanf("%s",uname);
+					rewind (fp);
+					while(fread(&detail,recsize,1,fp1)>0)
+					{
+
+						if(detail.name == uname)
+						{
+							printf("%s",detail.name);
+							printf("%d",detail.num);
+							gotoxy(16,17);
+							printf("%d/%d/%d",detail.d.year,detail.d.month,detail.d.day);
+							gotoxy(30,17);
+							printf("%d",detail.stime);
+							gotoxy(50,17);
+							printf("%d",detail.etime);
+
+						}
+						else
+						{       gotoxy(40,15);
+								printf("There is no Booking in %d/%d/%d",detail.d.year,detail.d.month,detail.d.day);
+						}
+					}
+				}
+				break;
+				case '3':
+				{
+					menu_start();
+				}
+				default:
+				{
+					gotoxy(28,20);
+					printf("Invalid choice!!");
+					i = getche();
+					goto search_menu;
+				}
+			}	
 		}
 		break;
 		case '3':
