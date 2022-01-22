@@ -14,7 +14,6 @@ struct booking_Details{
 		int month;
 		int day;
 	}d;
-
 }detail;
 
 
@@ -70,7 +69,7 @@ void menu()
 	gotoxy(10,10);
 	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 	gotoxy(40,24);
-	printf("    Opeaning/Closing Time: 8am-19pm");
+	printf("    Opening/Closing Time: 8am-19pm");
 	gotoxy(10,23);
 	printf("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
 }
@@ -93,23 +92,25 @@ void booking(ch)
 		case '1':
 		{
 			FILE *fp1;
-			int i,recsize,year1,month1,day1,time1,time2,stime,flag=0;
+			int recsize,year1,month1,day1,time1,time2,stime,flag=0;
 			char name[50],c;
 			long int num;
-			fp1 = fopen("c:\\TURBOC3\\BIN\\futsal\\dat.txt","rb+");
-			if(fp1 == NULL)
-			{
-				fp1 = fopen("c:\\TURBOC3\\BIN\\futsal\\dat.txt","wb+");
-				if(fp1 == NULL)
-				{
-					printf("File not found!!");
-				}
-			}
-			recsize = sizeof(detail);
-			fseek(fp1,0, SEEK_END);
+			
+			
 			another = 'y';
 			while(another == 'y')
 			{
+				fp1 = fopen("c:\\TURBOC3\\BIN\\futsal\\dat.txt","rb+");
+				if(fp1 == NULL)
+				{
+					fp1 = fopen("c:\\TURBOC3\\BIN\\futsal\\dat.txt","wb+");
+					if(fp1 == NULL)
+					{
+						printf("File not found!!");
+					}
+				}
+				recsize = sizeof(detail);
+				fseek(fp1,0, SEEK_END);
 				flag:
 				cleardevice();
 				menu();
@@ -122,21 +123,35 @@ void booking(ch)
 				printf("Contact no.      : ");
 				scanf("%ld",&num);
 				fflush(stdin);
-				gotoxy(15,14);
+				while(fread(&detail,recsize,1,fp1)>0)
+				{
+					if(strcmp(detail.name,name) ==0 || num == detail.num)
+					{
+						gotoxy(15,14);
+						printf("Booking not available in provided information!!");
+						gotoxy(15,15);
+						printf("Please Enter different name or contact number!!");
+						c = getche();
+						goto flag;
+					}
+				}
+				gotoxy(15,15);
 				printf("Date(yyyy/mm/dd) : \t");
 				printf("Year : ");
 				scanf("%d",&year1);
 				fflush(stdin);
-				gotoxy(39,15);
+				gotoxy(39,16);
 				printf(" Month: ");
 				fflush(stdin);
 				scanf("%d",&month1);
-				gotoxy(39,16);
+				gotoxy(39,17);
 				printf("   Day: ");
 				fflush(stdin);
 				scanf("%d",&day1);
 				if(year1 <=2021 || month1 < 1 || month1 > 12 || day1 < 1 || day1 > 30){
+					gotoxy(20,18);
 					printf("Invalid Date!!, Refill the Form.");
+					c = getche();
 					goto flag;
 				}
 				time:
@@ -145,9 +160,6 @@ void booking(ch)
 				gotoxy(13,12);
 				printf("Provided time should be in 24 Hour Format");
 				gotoxy(16,13);
-//				year1 = detail.d.year;
-//				month1 = detail.d.month;
-//				day1 = detail.d.day;
 				printf("Date : %d/%d/%d",year1,month1,day1);
 				gotoxy(17,14);
 				printf("Starting Time : ");
@@ -165,7 +177,6 @@ void booking(ch)
 					goto time;
 				}
 
-//				fwrite(&detail,recsize,1,fp1);
 				rewind(fp1);
 				while(fread(&detail,recsize,1,fp1)>0);
 				{
@@ -201,19 +212,18 @@ void booking(ch)
 					fwrite(&detail,recsize,1,fp1);
 					gotoxy(20,20);
 					printf("Booking Complete!!");
-					fclose(fp1);
 					gotoxy(20,22);
 					printf("DO you want to Book another Game (Y/N)");
 					another = getche();
 					tolower(another);
+					fclose(fp1);
 				}
 			}
 			menu_start();
-
 		break;
 		}
 		case '2':
-		{
+		{       char c;
 			search_menu:
 			cleardevice();
 			menu();
@@ -246,7 +256,7 @@ void booking(ch)
 				{
 					gotoxy(28,20);
 					printf("Invalid choice!!");
-					i = getche();
+					c = getche();
 					goto search_menu;
 				}
 			}
@@ -281,7 +291,7 @@ void find_booking()
 {
 
 	FILE *fp2;
-	int flag=0,i;
+	int flag=0;
 	long int unum;
 	char uname[50],c;
 	again2:
@@ -309,8 +319,8 @@ void find_booking()
 			gotoxy(16,15);
 			printf("Name : %s",detail.name);
 			gotoxy(16,16);
-			printf("Contact No. : %ld",unum);
-			gotoxy(16,17);
+//			printf("Contact No. : %ld",unum);
+//			gotoxy(16,17);
 			printf("Date : %d/%d/%d",detail.d.year,detail.d.month,detail.d.day);
 			gotoxy(16,18);
 			printf("Starting Time : %d",detail.stime);
@@ -324,11 +334,8 @@ void find_booking()
 				fclose(fp2);
 				goto again2;
 			}
-			else
-			{
-				fclose(fp2);
-				menu_start();
-			}
+			fclose(fp2);
+			menu_start();
 		}
 	}
 	if(flag == 0)
@@ -344,12 +351,9 @@ void find_booking()
 			fclose(fp2);
 			goto again2;
 		}
-		else
-		{
-			fclose(fp2);
-			menu_start();
-		}
 	}
+	fclose(fp2);
+	menu_start;
 
 }
 
@@ -400,17 +404,6 @@ void view_booking()
 			printf("Booking not avilable at provided time.");
 			gotoxy(15,21);
 			printf("Do you want check for booking again(y/n) : ");
-			c = getche();
-			if(c=='y' || c=='Y')
-			{
-				fclose(fp3);
-				goto again;
-			}
-			else
-			{
-				fclose(fp3);
-				menu_start();
-			}
 		}
 	}
 	if(flag3 == 0)
@@ -419,19 +412,18 @@ void view_booking()
 		printf("Booking avilable at provided Time.");
 		gotoxy(15,21);
 		printf("Do you want check for booking again(y/n) : ");
-		c = getche();
-		if(c=='y' || c=='Y')
-		{
-			fclose(fp3);
-			goto again;
-		}
-		else
-		{
-			fclose(fp3);
-			menu_start();
-		}
 	}
-	fclose(fp3);
+	c = getche();
+	if(c=='y' || c=='Y')
+	{
+		fclose(fp3);
+		goto again;
+	}
+	else
+	{
+		fclose(fp3);
+		menu_start();
+	}
 }
 
 
@@ -471,7 +463,7 @@ void cancel_booking()
 	gets(uname1);
 	fflush(stdin);
 	gotoxy(15,13);
-	printf("Enetr your booking Contact No. : ");
+	printf("Enter your booking Contact No. : ");
 	scanf("%ld",&unum1);
 	fflush(stdin);
 	while(fread(&detail,sizeof(detail),1,fp4)>0)
@@ -479,9 +471,7 @@ void cancel_booking()
 		if(strcmp(uname1,detail.name)!=0 && unum1 != detail.num)
 		{
 			flag9 = 1;
-			fwrite(&detail,sizeof(detail),1,fp5);
-
-
+			fwrite(&detail,sizeof(detail),1,fp5);	
 		}
 	}
 	fclose(fp4);
@@ -512,7 +502,7 @@ void modify_booking()
 {
 
 	FILE *fp6;
-	int recsize,year3,month3,day3,i,mflag = 0,stime1,etime1;
+	int recsize,year3,month3,day3,mflag = 0,stime1,etime1;
 	long int unum2,num2;
 	char uname2[50],name2[50],c;
 	c_again2:
@@ -527,7 +517,7 @@ void modify_booking()
 	}
 	cleardevice();
 	menu();
-	recsize = sizeof(detail);
+//	recsize = sizeof(detail);
 	gotoxy(15,12);
 	printf("Enter your booking name : ");
 	gets(uname2);
@@ -552,19 +542,21 @@ void modify_booking()
 			gotoxy(15,13);
 			printf("Contact no.      : ");
 			scanf("%ld",&num2);
-			gotoxy(15,14);
+			gotoxy(15,15);
 			printf("Date(yyyy/mm/dd) : \t");
 			printf("Year : ");
 			scanf("%d",&year3);
-			gotoxy(39,15);
+			gotoxy(39,16);
 			printf(" Month: ");
 			scanf("%d",&month3);
-			gotoxy(39,16);
+			gotoxy(39,17);
 			printf("   Day: ");
 			scanf("%d",&day3);
 			if(year3 <=2021 || month3 < 1 || month3 > 12 || day3 < 1 || day3 > 30)
 			{
+				gotoxy(20,18);
 				printf("Invalid Date!!, Refill the Form.");
+				c = getche();
 				goto flag;
 			}
 			time:
@@ -585,59 +577,66 @@ void modify_booking()
 			if(stime1 < 8 || stime1 > 19 || etime1 < stime1 || etime1 > 19 || etime1 < 8)
 			{
 				printf("Invalid Time!! Refill the Form.");
-				i = getche();
+				c = getche();
 				goto time;
 			}
-			while(fread(&detail,recsize,1,fp6)>0);
-				{
-					mflag = 0;
-					if(detail.d.year == year3 && detail.d.month == month3 && detail.d.day == day3 && stime1 >= detail.stime && stime1 < detail.etime && etime1 > detail.stime && etime1 <= detail.etime )
-					{
-						mflag = 1;
-						gotoxy(15,20);
-						printf("Booking not avilable at provided time.");
-						gotoxy(15,21);
-						printf("Do you want check for booking again(y/n) : ");
-						c = getche();
-						if(c=='y' || c=='Y')
-						{
-							goto time;
-						}
-						else
-						{
-							fclose(fp6);
-							menu_start();
-						}
-					}
-				}
-				if(mflag == 0)
-				{
-					strcpy(detail.name,name2);
-					detail.num = num2;
-					detail.d.year = year3;
-					detail.d.month = month3;
-					detail.d.day = day3;
-					detail.stime = stime1;
-					detail.etime = etime1;
-
-					fseek(fp6,-recsize,SEEK_CUR);
-					fwrite(&detail,recsize,1,fp6);
-					gotoxy(20,20);
-					printf("Booking Complete!!");
-					fclose(fp6);
-					gotoxy(20,22);
-					printf("DO you want to modify another Booking(y/n)");
+			
+			while(fread(&detail,sizeof(detail),1,fp6)>0);
+			{
+				mflag = 0;
+				if(detail.d.year == year3 && detail.d.month == month3 && detail.d.day == day3 && stime1 >= detail.stime && stime1 < detail.etime && etime1 > detail.stime && etime1 <= detail.etime )
+				{	
+					mflag = 1;			
+					gotoxy(15,20);
+					printf("Booking not avilable at provided time.");
+					gotoxy(15,21);
+					printf("Do you want check for booking again(y/n) : ");
 					c = getche();
 					if(c=='y' || c=='Y')
 					{
-						goto c_again2;
+						goto time;
 					}
 					else
 					{
+						fclose(fp6);
 						menu_start();
 					}
 				}
 			}
+			if(mflag == 0)
+			{
+				strcpy(detail.name,name2);
+				detail.num = num2;
+				detail.d.year = year3;
+				detail.d.month = month3;
+				detail.d.day = day3;
+				detail.stime = stime1;
+				detail.etime = etime1;
+				fseek(fp6,-recsize,SEEK_CUR);
+				fwrite(&detail,recsize,1,fp6);
+				gotoxy(20,20);
+				printf("Booking Complete!!");
+				fclose(fp6);
+				gotoxy(20,22);
+				printf("DO you want to modify another Booking(y/n)");
+				c = getche();
+				if(c=='y' || c=='Y')
+				{
+					goto c_again2;
+				}
+				else
+				{
+					menu_start();
+				}
+			}
+		}
+	}
+	if(mflag == 0)
+	{
+		gotoxy(15,15);
+		printf("There is no booking on provided Information!!");
+		c = getche();
+		goto c_again2;	
 	}
 //			fwrite(&detail,recsize,1,fp6);
 }
